@@ -518,6 +518,13 @@ Result Device::createRayTracingPipeline(const RayTracingPipelineDesc& desc, IRay
     }
 }
 
+Result Device::createDispatchPipeline(IShaderProgram* dispatchProgram, IDispatchPipeline** outPipeline)
+{
+    RefPtr<VirtualDispatchPipeline> pipeline = new VirtualDispatchPipeline(this, dispatchProgram);
+    returnComPtr(outPipeline, pipeline);
+    return SLANG_OK;
+}
+
 Result Device::createShaderObject(
     slang::ISession* slangSession,
     slang::TypeReflection* type,

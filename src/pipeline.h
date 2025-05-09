@@ -16,6 +16,7 @@ enum class PipelineType
     Render,
     Compute,
     RayTracing,
+    Dispatch,
 };
 
 class Pipeline : public DeviceChild
@@ -125,6 +126,35 @@ public:
     virtual bool isVirtual() const override { return true; }
 
     // IRayTracingPipeline interface
+    virtual SLANG_NO_THROW Result SLANG_MCALL getNativeHandle(NativeHandle* outHandle) override;
+};
+
+class DispatchPipeline : public IDispatchPipeline, public Pipeline
+{
+public:
+    SLANG_COM_OBJECT_IUNKNOWN_ALL
+    IPipeline* getInterface(const Guid& guid);
+
+public:
+    DispatchPipeline(Device* device)
+        : Pipeline(device)
+    {
+    }
+
+    virtual PipelineType getType() const override { return PipelineType::Dispatch; }
+
+    // IPipeline interface
+    virtual SLANG_NO_THROW IShaderProgram* SLANG_MCALL getProgram() override { return m_program.get(); }
+};
+
+class VirtualDispatchPipeline : public DispatchPipeline
+{
+public:
+    VirtualDispatchPipeline(Device* device, IShaderProgram* program);
+
+    virtual bool isVirtual() const override { return true; }
+
+    // IRenderPipeline interface
     virtual SLANG_NO_THROW Result SLANG_MCALL getNativeHandle(NativeHandle* outHandle) override;
 };
 

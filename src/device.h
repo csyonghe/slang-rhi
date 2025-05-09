@@ -170,6 +170,8 @@ public:
     createComputePipeline(const ComputePipelineDesc& desc, IComputePipeline** outPipeline) override;
     virtual SLANG_NO_THROW Result SLANG_MCALL
     createRayTracingPipeline(const RayTracingPipelineDesc& desc, IRayTracingPipeline** outPipeline) override;
+    virtual SLANG_NO_THROW Result SLANG_MCALL
+    createDispatchPipeline(IShaderProgram* dispatchProgram, IDispatchPipeline** outPipeline) override;
 
     virtual SLANG_NO_THROW Result SLANG_MCALL createShaderObject(
         slang::ISession* session,

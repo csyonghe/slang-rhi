@@ -102,4 +102,33 @@ Result VirtualRayTracingPipeline::getNativeHandle(NativeHandle* outHandle)
     return SLANG_E_NOT_AVAILABLE;
 }
 
+// ----------------------------------------------------------------------------
+// DispatchPipeline
+// ----------------------------------------------------------------------------
+
+IPipeline* DispatchPipeline::getInterface(const Guid& guid)
+{
+    if (guid == ISlangUnknown::getTypeGuid() || guid == IPipeline::getTypeGuid() ||
+        guid == IDispatchPipeline::getTypeGuid())
+        return static_cast<IDispatchPipeline*>(this);
+    return nullptr;
+}
+
+
+// ----------------------------------------------------------------------------
+// VirtualDispatchPipeline
+// ----------------------------------------------------------------------------
+
+VirtualDispatchPipeline::VirtualDispatchPipeline(Device* device, IShaderProgram* program)
+    : DispatchPipeline(device)
+{
+    m_program = checked_cast<ShaderProgram*>(program);
+}
+
+Result VirtualDispatchPipeline::getNativeHandle(NativeHandle* outHandle)
+{
+    *outHandle = {};
+    return SLANG_E_NOT_AVAILABLE;
+}
+
 } // namespace rhi

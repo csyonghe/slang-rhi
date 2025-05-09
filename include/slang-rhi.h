@@ -1749,6 +1749,11 @@ class IRayTracingPipeline : public IPipeline
     SLANG_COM_INTERFACE(0x5047f5d7, 0xc6f6, 0x4482, {0xab, 0x49, 0x08, 0x57, 0x1b, 0xcf, 0xe8, 0xda});
 };
 
+class IDispatchPipeline : public IPipeline
+{
+    SLANG_COM_INTERFACE(0x345966e8, 0x95ce, 0x4c53, {0xa7, 0x23, 0xff, 0x76, 0x77, 0x17, 0xb, 0xa4});
+};
+
 struct ScissorRect
 {
     uint32_t minX = 0;
@@ -2084,6 +2089,17 @@ public:
 
     virtual SLANG_NO_THROW void SLANG_MCALL
     dispatchRays(uint32_t rayGenShaderIndex, uint32_t width, uint32_t height, uint32_t depth) = 0;
+};
+
+class IDispatchPassEncoder : public IPassEncoder
+{
+    SLANG_COM_INTERFACE(0x7bf1e9bc, 0x8134, 0x4d9c, {0xb4, 0x89, 0xd2, 0x5e, 0x71, 0x51, 0xc6, 0xf5});
+
+public:
+    virtual SLANG_NO_THROW IShaderObject* SLANG_MCALL bindPipeline(IDispatchPipeline* pipeline) = 0;
+    virtual SLANG_NO_THROW void SLANG_MCALL bindPipeline(IDispatchPipeline* pipeline, IShaderObject* rootObject) = 0;
+
+    virtual SLANG_NO_THROW void SLANG_MCALL dispatch() = 0;
 };
 
 class ICommandEncoder : public ISlangUnknown
@@ -2797,6 +2813,16 @@ public:
     {
         ComPtr<IRayTracingPipeline> pipeline;
         SLANG_RETURN_NULL_ON_FAIL(createRayTracingPipeline(desc, pipeline.writeRef()));
+        return pipeline;
+    }
+
+    virtual SLANG_NO_THROW Result SLANG_MCALL
+    createDispatchPipeline(IShaderProgram* program, IDispatchPipeline** outPipeline) = 0;
+
+    inline ComPtr<IDispatchPipeline> createDispatchPipeline(IShaderProgram* program)
+    {
+        ComPtr<IDispatchPipeline> pipeline;
+        SLANG_RETURN_NULL_ON_FAIL(createDispatchPipeline(program, pipeline.writeRef()));
         return pipeline;
     }
 
